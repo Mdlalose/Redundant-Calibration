@@ -1,5 +1,5 @@
 #simulated Visibilitity
-import numpy as np
+import numpy as np, math
 from numpy.linalg import inv
 from matplotlib import pyplot as plt
 
@@ -76,23 +76,33 @@ def sim_redundant_baseline(xdim,ydim,plot_qu=False,n_unique_baseline =False):
 
 
 # simulated visibilities form random sky
-def sim_vis(n_ants,q,ant1,ant2,q_unique,vis_map,g_low = 0.8,g_high = 1.2, sigma_sky= 0.5, noise_fac = 0.01):
+def sim_vis(real,n_ants,q,ant1,ant2,q_unique,vis_map,etha_low=-0.1,etha_high =0.15,phi_low =-0.08, phi_high=0.08,sigma_sky= 0.5, noise_fac = 0.01):
 
     """ This function simulate visibility using true sky as Guassian random field with sigma =0.5, gains [0.8,1.2] and with add a random noise of noise_fac = 0.01"""
     """ This function returns an array of real  simulated visibility, diagonal covaraince matrix,simulated true sky visibity and gains """
-   
-    sky= np.random.normal(0.0,sigma_sky)*np.random.randn(q_unique.size)
-    g_param= np.random.uniform(g_low,g_high)*np.random.randn(n_ants)
-    g_param =np.array(g_param)
-    sky =np.array(sky)
-    ant1 = np.array(ant1)
-    ant2 = np.array(ant2)
-    vis_map =np.array(vis_map)
-    Vis =[g_param[ant1]*g_param[ant2]*sky[vis_map]+ noise_fac*np.random.randn(q.size), noise_fac*np.ones(q.size)]
-    cov_matrix = np.zeros([q.size,q.size])
-    for k in range(q.size):
-        cov_matrix[k][k] =Vis[1][k]
-
-    return [Vis[0],cov_matrix,sky,g_param]
+     
+    if real  is True:
+        sky= np.random.normal(0.0,sigma_sky)*np.random.randn(q_unique.size)
+        g_param= np.random.uniform(math.exp(etha_low),math.exp(etha_high))*np.random.randn(n_ants)
+        g_param =np.array(g_param)
+        sky =np.array(sky)
+        ant1 = np.array(ant1)
+        ant2 = np.array(ant2)
+        vis_map =np.array(vis_map)
+        Vis =[g_param[ant1]*g_param[ant2]*sky[vis_map]+ noise_fac*np.random.randn(q.size), noise_fac*np.ones(q.size)]
+        cov_matrix = np.zeros([q.size,q.size])
+        for k in range(q.size):
+            cov_matrix[k][k] =Vis[1][k]
+        return [Vis[0],cov_matrix,sky,g_param]
+    else:
+        sky= np.random.normal(0.0,sigma_sky)*np.random.randn(q_unique.size) + 1j*np.random.normal(0.0,sigma_sky)*np.random.randn(q_unique.size)
+        
+        g_param = math.exp(np.random.uniform(etha_low,etha_high))*np.random.randn(n_ants) + 1j*math.exp(np.random.uniform(phi_low,phi_high))*np.random.randn(n_ants)
+        Vis =[g_param[ant1]*g_param[ant2]*sky[vis_map]+ noise_fac*np.random.randn(q.size), noise_fac*np.ones(q.size)]
+        cov_matrix = np.zeros([q.size,q.size])
+        for k in range(q.size):
+            cov_matrix[k][k] =Vis[1][k]
+        return [Vis[0],cov_matrix,sky,g_param]
+        
    
 
