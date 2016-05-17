@@ -56,13 +56,26 @@ for ind in range(q.size):
 
 
 sigma_sky = 0.5
-noise_fac = 0.0001
+Tsys = 50 #K
+CHIME_B = 10**6 #  1MHz
+tau = 21 # integration time in seconds
+
+def noise_sky(Tsys,tau,bandwidth):
+    return Tsys/(math.sqrt(tau*bandwidth))
+
+
+noise_fac = noise_sky(Tsys,CHIME_B,tau)
 sky= np.random.normal(0.0,sigma_sky)*np.random.randn(q_unique.size)
 amp= 0.3
+s_n = ((0.3**2)*0.5)/noise_fac
+
+print 'S/N', s_n
+
+
 g_param= amp*np.random.randn(n_ants)
 
 
-g_param =np.array(g_param)
+g_param =np.array(g_param)/np.mean(g_param)
 sky =np.array(sky)
 ant1 = np.array(ant1)
 ant2 = np.array(ant2)
@@ -76,35 +89,71 @@ def  model_vis(g,sky):
 s_0 =  sky + 0.1*np.random.randn(sky.size)
 g_0 = g_param + 0.1*np.random.randn(g_param.size)
 
-P0 = omnical.lincal(Vis[0],model_vis(g_0,s_0),g_0,s_0,omnical.config_matrix(n_ants,ant1,ant2,vis_map,g_0,s_0,q,n_unique))
+def linncal_func(Vis,g_0,s_0,N_steps):
+    Parameter ={}
+    for j in range(N_steps):
+        P = omnical.lincal(Vis[0],model_vis(g_0,s_0),g_0,s_0,omnical.config_matrix(n_ants,ant1,ant2,vis_map,g_0,s_0,q,n_unique))
+        Parameter[j] =P
+        s_0 = P[1]
+        g_0 = P[0]
 
-P1 = omnical.lincal(Vis[0],model_vis(P0[0],P0[1]),P0[0],P0[1],omnical.config_matrix(n_ants,ant1,ant2,vis_map,P0[0],P0[1],q,n_unique))
-P2 =  omnical.lincal(Vis[0],model_vis(P1[0],P1[1]),P1[0],P1[1],omnical.config_matrix(n_ants,ant1,ant2,vis_map,P1[0],P1[1],q,n_unique))
-P3  = omnical.lincal(Vis[0],model_vis(P2[0],P2[1]),P2[0],P2[1],omnical.config_matrix(n_ants,ant1,ant2,vis_map,P2[0],P2[1],q,n_unique))
+    return Parameter
 
-plt.ion()
-plt.plot(g_param,P0[0],'.',label=' 1st iteration')
-plt.plot(g_param,P1[0],'.',label=' 2nd iteration')
-plt.plot(g_param,P2[0],'.',label=' 3rd iteration')
-plt.plot(g_param,P3[0],'.',label=' 4th iteration')
 
+
+
+plt.plot(g_param,linncal_func(Vis,g_0,s_0,3)[2][0],'.',label=' 1st iteration')
 plt.xlabel('input gains')
 plt.ylabel('output gains')
-
 plt.legend(loc = 'upper left')
+plt.show()
 
 
-plt.ion()
-plt.plot(sky,P0[1],'.',label=' 1st iteration')
-plt.plot(sky,P1[1],'.',label=' 2nd iteration')
-plt.plot(sky,P2[1],'.',label=' 3rd iteration')
-plt.plot(sky,P3[1],'.',label=' 4th iteration')
 
+plt.plot(sky,linncal_func(Vis,g_0,s_0,3)[2][1],'.',label=' 1st iteration')
 plt.xlabel('input true sky ')
 plt.ylabel('output true sky')
 
 plt.legend(loc = 'upper left')
+plt.show()
 
+
+"""
+"""
+plt.plot(Vis[0],model_vis(linncal_func(Vis,g_0,s_0,3)[2][0],linncal_func(Vis,g_0,s_0,2)[1][1]),'.',label=' 1 iteration')
+plt.xlabel('simulated vis ')
+plt.ylabel('output vis')
+
+plt.legend(loc = 'upper left')
+plt.show()
+
+def noise_dB(output,input):
+    results = np.zeros(input.size)
+    for j in range(input.size):
+        results[j] = 10*math.log(abs(output[j]/input[j]))
+    return results
+
+        
+
+plt.plot(model_vis(linncal_func(Vis,g_0,s_0,3)[2][0],linncal_func(Vis,g_0,s_0,2)[1][1])/Vis[0],'.',label=' 1 iteration')
+
+plt.ylabel(r'$vis_{output}/vis_{input}$')
+
+plt.legend(loc = 'upper left')
+plt.show()
+
+
+plt.plot(noise_dB(model_vis(linncal_func(Vis,g_0,s_0,3)[2][0],linncal_func(Vis,g_0,s_0,2)[1][1]),Vis[0]),'.',label=' 1 iteration')
+
+
+
+plt.ylabel(r'$dB$')
+
+plt.legend(loc = 'upper left')
+plt.show()
+
+def  sigma_ration( output,input):
+    return  np.std(output -input)/np.std(input)
 
 
 
