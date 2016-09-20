@@ -1,0 +1,99 @@
+\documentclass[12pt,a4paper,oneside]{report}%{book}
+%\documentstyle[subfig]{report}
+\usepackage{a4wide,times}
+\usepackage{latexsym}
+\usepackage[Sonny]{fncychap}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{multirow}% several rows in a cell of table
+\usepackage{psfrag}
+\usepackage{subfigure}%added by Simon to use subfigures
+\usepackage{latexsym}
+\usepackage{fancyhdr}
+\usepackage[round, sort]{natbib}
+
+% -- LINE SPACE --
+%\setlength{parindent}{0pt}
+\newlength{\tmpmargin}
+\newcommand{\sect}[1]{\setcounter{equation}{0}\section{#1}}
+\renewcommand{\theequation}
+            {\arabic{chapter}.\arabic{section}.\arabic{equation}}
+\newcommand{\clearemptydoublepage}
+            {\newpage{\pagestyle{empty}\cleardoublepage}}
+\renewcommand{\baselinestretch}{1.5}
+\setcounter{tocdepth}{5}
+\setcounter{secnumdepth}{5}
+\setcounter{MaxMatrixCols}{10}
+\numberwithin{equation}{chapter}%style of numbering equation
+
+\title{Title of the thesis}
+
+\author{Author's name}
+
+%=============================================================================================================
+\begin{document}
+
+%=============================================================================================================
+\input{frontpage}
+
+%=============================================================================================================
+\thispagestyle{empty}
+\begin{center}
+{\LARGE \textit{A dedication or suitably inspirational quote.}}
+\end{center}
+\newpage 
+
+%=============================================================================================================
+
+\pagenumbering{roman}
+\input{abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+
+\chapter*{Preface and Declaration}
+\input{preface_declaration}
+\addcontentsline{toc}{chapter}{Preface and declaration}
+
+\input{acknowledgment}
+\addcontentsline{toc}{chapter}{Acknowledgments}
+
+
+\newpage
+\addcontentsline{toc}{chapter}{Contents}
+\tableofcontents
+\newpage
+\addcontentsline{toc}{section}{List of Tables}
+\listoftables
+\newpage
+\addcontentsline{toc}{section}{List of Figures}
+\listoffigures
+\newpage
+
+\pagenumbering{arabic}
+
+%=============================================================================================================
+
+\input{introduction}
+\input{msc_chap1}
+\input{msc_chap2}
+\input{msc_chap3}
+\input{conclusion}
+
+%=============================================================================================================
+
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliographystyle{elsart-harv-mjh}%agsm}
+\bibliography{refs}
+
+% \begin{thebibliography}{99}
+% \addcontentsline{toc}{chapter}{Bibliography}
+%\addcontentsline{toc}{chapter}{References}
+% \input{bibliography}
+
+% \end{thebibliography}
+
+\end{document}
+

@@ -1,0 +1,63 @@
+\chapter{Basic 21 cm Physics}
+
+\noindent
+Our universe contains $\sim$ $75\%$ of hydrogen gas present in the intergalactic medium (IGM). Hence, Hydrogen serves as convenient tracer of the properties of the gas in the history of the universe. Our focus is on the 21 cm line, which is produced by the hyperfine splitting of the $1S$ ground state due to the interaction of the magnetic moments of the proton and of the  electron\cite{c},. This process leads to two distinct levels with an energy difference $\Delta(E)=5.9\times10^{-6} eV$, which  corresponds to a frequency of 1420 MHz or a wavelength 21.1 cm, see Figure 2.
+%\begin{figure}
+%\centering
+%\includegraphics[width=8cm]{Hydrogen_emission1}
+%\caption{The hyperfine splitting of $1S$ state of hydrogen atom\cite{f}.}
+%\label{fig:my_label}
+%\end{figure}
+To study the evolution of the 21 cm signal, we use the radiative transfer equation. Neglecting scattering processes along a path described by co-ordinate $s$ , for a specific intensity $I_{\nu}$, the radiative transfer is defined as \cite{c}
+\begin{equation}
+\frac{dI_{\nu}}{ds} =-\alpha_{\nu}I_{\nu}+j_{\nu}
+\end{equation}
+where $\alpha_{\nu}$ and $j_{\nu}$ describe the absorption and emission by a gas along the path, respectively. To simplify the problem, we take Reyleigh-Jeans limit, since the frequency, $\nu$, is much smaller than the peak frequency of the CMB blackbody. The brightness temperature $T_b$ of the gas, is given by\cite{c}
+\begin{equation}
+I_{\nu}=2K_{B}T_b\nu^2/c^2
+\end{equation}
+where $c$ is the speed of light and $k_{B}$ is the Boltzmann constant. Using the standard definition of the optical depth 
+\begin{equation}
+\tau = \int ds\alpha_{\nu}(s)
+\end{equation}
+and Equation (1), it can be shown that the observed temperature at frequency $\nu$ is defined as\cite{c}
+\begin{equation}
+T^{obs}_{b} =T_{ex}(1-\exp(-\tau_{\nu}))+ T_{R}(\nu)\exp(-\tau_{\nu})
+\end{equation}
+where $T_{R}$ is the brightness temperature of a background radio source along the line of sight through a cloud of optical depth $\tau_{\nu}$ and with an excitation temperature $T_{ex}$. The excited temperature for 21 cm signal is known as the spin temperature $T_S$ and it is defined as the ration between the number densities $n_j$ of hydrogen atoms in the hyperfine levels\citet{c}. The observable differential brightness temperature $T_b$ due to the redshifted 21 cm signal from a cloud of hydrogen gas in the IGM is defined as\citet{d}
+
+\begin{equation}
+\delta T_b(\theta,z)\approx 27(1+\delta)x_{HI}\Big (1-\frac{T_{\gamma}}{T_S} \Big ) \Big (\frac{1+z}{10} \Big )^{1/2} mK
+\end{equation}
+where $\theta$ is the position on the sky, $z$ is the redshift of the gas, $\delta$ is the local matter overdensity of the gas, $x_{HI}$ is the neutral fraction of the gas, and $T_\gamma$ is the temperature of the CMB radiation. Equation (5)  tells us that we can only be able to observe $\delta T_b$ when $T_S \neq T_\gamma$. \\
+The main three processes that determine $T_S$  are: (i) absorption/emission of 21 cm photons from/to the radio background,general from CMB, (ii)collisions with other hydrogen atoms and with electrons: and (iii) resonant scattering of $Ly\alpha$ photons that cause a spin flip via intermediate excited state\cite{c}. The rate of these excitation processes is faster than the de-excitation time of the line. Hence, the spin temperature is given by the overall balance of these effect\citet{c}
+\begin{equation}
+T^{-1}_S=\frac{T^{-1}_\gamma+x_{\alpha}T^{-1}_{\alpha}+x_{c}T^{-1}_{K}}{1+x_\alpha+x_c}
+\end{equation}
+where $T_{\alpha}$ is the color temperature of the $Ly\alpha$ radiation field at the $Ly\alpha$ frequency, $T_K$ is the kinetic temperature , and $x_\alpha, x_c$ are coupling coefficient due to atomic collision and  scattering of $ Ly\alpha$ photons. 
+\section{Evolution of Global 21 cm signal}
+Now that we have reviewed the basics physics of 21 cm line, we are ready to discuss briefly  the global evolution of HI with cosmic time in IGM . The evolution of 21 cm brightness temperature $T_b$ depends on the amount of HI, $x_{HI}$ and the spin temperature, $T_S$, relative to CMB temperature $T_{\gamma}$ at different cosmic epoch. 
+There five 'critical points' in the evolution of global 21 cm signal that distinguish different epochs\citet{c}:
+\begin{itemize}
+\item At redshift decoupling ,$z_{dec}$, the fraction of electron left from recombination allows the Compton scattering to maintain the thermal coupling of HI gas to the CMB. Hence,$T_{K} \approx T_S \approx T_{\gamma}$ and  $\bar{T_b}=0$ and no 21 cm signal is detectable.
+\item  At "dark age" regime, the gas cools adiabatically so  that $T_{K}\propto (1+z)^2$ leads to $T_K < T_{\gamma}$ and collisional coupling sets  $T_S <T_{\gamma}$ resulting to $T_b <0$ and this is an early absorption signal.
+\item The expansion cause the gas density to decrease and thus collisional coupling becomes ineffective. The radiation coupling  to the CMB sets $T_S=T_{\gamma}$, hence, again $T_b}=0$, no detectable signal.
+\item After first sources had formed around redshift $20\leq z\leq 40$. So $T_{K} <T_{\gamma}$, we expect in this regime that $T_S$ is coupled to cold gas so that $T_S \sim T_K <T_{\gamma}$ and therefore the signal is absorption.
+\item By the point $T_K \gg T_{\gamma}$ at $10\leq z\leq 6$. Dependence on $T_S$  become negligible in equation (5), which simplify 21 cm power spectrum. Eventually, all the IGM is ionized, driving $T_b$ to zero as the reionization completes. This is the end epoch of reionization (EoR). 
+
+\end{itemize}
+
+Figure 3 shows the evolution of the sky-averaged 21 cm signal as function of redshift. In the next section, we discuss the craft of this project, which to constrained the duration of EoR and to find the best model of foreground power spectrum using MCMC method.
+%\begin{figure}[!]
+%\centering
+%\includegraphics[width=9cm]{fig3}
+%\caption{The evolution of 21 cm signal. Top plot show the history of structure formation as  function of redshift. The bottom plot show the evolution of 21 cm brightness temperature as function of frequency at different epoch\citet{c}.}
+%\label{fig:my_label}
+%\end{figure}
+
+
+Example citation... \citet{Abell_1958}.
+
+
+
+
