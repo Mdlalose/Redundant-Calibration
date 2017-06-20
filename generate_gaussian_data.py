@@ -18,7 +18,7 @@ mycorr_ft=numpy.abs(numpy.fft.rfft(mycorr))
 mysig=numpy.sqrt(mycorr_ft)
 
 Ant_eps = []
-nn_sample = 100
+nn_sample = 1
 for n_i in range(nn_sample):
 	ant_eps = []
 	for i in range(64):
@@ -32,7 +32,9 @@ for n_i in range(nn_sample):
 		dat = dat[len(dat)/2:]
 		dat = (dat/numpy.std(dat))*0.05
 		ant_eps.append(dat)
-		plt.plot(dat)
+		#plt.plot(dat)
+		#plt.xlabel('Frequency (MHZ)')
+		#plt.ylabel('$\epsilon$')
 	
 
 
@@ -42,7 +44,7 @@ for n_i in range(nn_sample):
 
 numpy.save('Ant_epsolon0.05.npy',Ant_eps)
 
-"""
+
 RA_src, Dec_src = numpy.load('src_pos.npy')[0], numpy.load('src_pos.npy')[1]
 src_flux = numpy.load('src_flux.npy')[1]
 x, y, z = numpy.cos(numpy.radians(Dec_src))*numpy.cos(numpy.radians(RA_src)), numpy.cos(numpy.radians(Dec_src))*numpy.sin(numpy.radians(RA_src)), numpy.sin(numpy.radians(Dec_src))
@@ -62,14 +64,20 @@ x, y, z = numpy.cos(numpy.radians(Dec_src))*numpy.cos(numpy.radians(RA_src)), nu
 r=numpy.sqrt(x**2 + y**2 + z**2)
 mydot = (x/r)*zen_vec[0] + (y/r)*zen_vec[1] + (z/r)*zen_vec[2]
 theta = numpy.arccos(mydot)
-for k in range(len(dat)):
 
-	beam1 = numpy.exp(-0.5*(theta/(sigma))**2)
-	beam12 = numpy.exp((-0.5*(theta)**2)*(1.0/(sigma + numpy.random.choice(dat)) + 1.0/(sigma + numpy.random.choice(dat)))**2)
-	plt.title('Primary Beam Variations')
-	plt.plot(theta,beam12, '.')
-	plt.plot(theta,beam1,'*')
 
-"""
+dat = Ant_eps[0][0]
+dat2 = Ant_eps[0][1]
+beam1 = numpy.exp(-(theta/(sigma))**2)
+beam12 = numpy.exp((-0.5*(theta)**2)*(1.0/(sigma*(1.0 +dat[0]))**2 + 1.0/(sigma*(1.0 + dat2[0]))**2))
+#plt.title('Primary Beam Variations')
+plt.plot(theta,beam12, '.',label= '$\epsilon =0.0$')
+plt.plot(theta,beam1,'*',label ='$\epsilon_1= -0.05$;$\epsilon_2= -0.06$')
+plt.xlabel(r'$\theta$ (radians)')
+plt.ylabel('Antenna Power Response')
+plt.legend(loc='best')
+plt.grid(True)
+
+
 
 

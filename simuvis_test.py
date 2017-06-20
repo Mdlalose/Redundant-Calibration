@@ -45,6 +45,7 @@ theta = np.arccos(mydot)
 sigma = 0.5*(1.22*(0.5/6.0))
 beam = np.exp(-0.5*(theta/sigma)**2)
 ii =  beam > 0.1
+#beam = beam[beam>0.1]
 
 RA_src= RA_src[ii]
 Dec_src= Dec_src[ii]
@@ -122,7 +123,7 @@ def get_V_uvw(blVectors,RA_src,Dec_src,src_flux,l_wave,dia_m,zen,nu_min,nu_max,a
   			 
 			 mydotxyz =  (x/r)*blVectors[k][0] + (y/r)*blVectors[k][1] + (z/r)*blVectors[k][2]
 			 exp_phase_shift = np.exp(-2j*np.pi*(mydotxyz/l_wave))
-			 tmp= np.sum(beam12*src_flux*np.power(nu[nu_i]/nu_0,-2.5)*exp_phase_shift)
+			 tmp= np.sum(beam*src_flux*np.power(nu[nu_i]/nu_0,-2.5)*exp_phase_shift)
 			 V_uvw[k]=tmp
 			 # first order error in visibility due to imperfections in antenna locations
 			 #delta_blVectors= np.array(blVectors_err[bl]) - np.array(blVectors[bl])
@@ -173,7 +174,7 @@ for i in range(len(ant1)):
 
 #RA_src, Dec_src, src_flux = np.load('10_brightest_src.npy')[0], np.load('10_brightest_src.npy')[1], np.load('10_brightest_src.npy')[2]
 sim_vis_n_sample =[]
-for n_i in range(len(Ant_eps)):
+for n_i in range(1):
 
 	visTrue = get_V_uvw(blVectors,RA_src,Dec_src,src_flux,0.5,6.0,zen_vec,170,230,ant1,ant2,Ant_eps[n_i])
 	sim_vis_n_sample.append(visTrue)
@@ -182,7 +183,7 @@ for n_i in range(len(Ant_eps)):
 
 
 
-np.save('obstrue_vis_' + repr(xdim) + 'x' + repr(ydim)  + 'beamvardata_100'+ '.npy',[sim_vis_n_sample,ant1,ant2,vis_map])
+#np.save('obstrue_vis_' + repr(xdim) + 'x' + repr(ydim)  + '20_data_redundant'+ '.npy',[sim_vis_n_sample,ant1,ant2,vis_map])
 
 """
 error = float(sys.argv[3])

@@ -50,23 +50,24 @@ for g in range(ydim**2):
 
 data_vis= np.load('obstrue_vis_8x8.npy')
 ant1,ant2, vis_map = data_vis[1], data_vis[2], data_vis[3]
-data_vis_0_05= np.load('obstrue_vis_8x8data_100.npy')
+data_vis_0_05= np.load('obstrue_vis_8x820_data_redundant.npy')
 
 
 noise_frac_gains = float(sys.argv[3])
 noise_frac_sky = float(sys.argv[4])
 #data = np.array(np.conj(gains[ant1])*gains[ant2]*data_vis_0_05[0][0])
 nu = np.arange(170.0,230,1.0)
-N_sample_sol=[]
-for n_i in range(len(data_vis_0_05[0])):
+N_sol =[]
+for n in range(1):
+
 	data =  []  #[]#np.array(np.conj(gains[ant1])*gains[ant2]*sky[0][vis_map])#np.zeros(len(data_vis[0]))		
-	for v_nu in range(len(data_vis[0])):
-   		data.append(np.array(np.conj(gains[ant1])*gains[ant2]*data_vis_0_05[0][n_i][v_nu]))
+	for v_nu in range(1):
+   		data.append(np.array(np.conj(gains[ant1])*gains[ant2]*data_vis_0_05[0][n][v_nu]))
 
 	ncal_sol =[]
 	n_iter = 20
 
-	for i in range(len(data)):
+	for i in range(1):
 		g_0=gains + noise_frac_gains*np.random.randn(len(gains))
 		s_0 = data_vis[0][i] + noise_frac_sky*np.random.randn(len(data_vis[0][i]))
 		fitp= np.concatenate((g_0,s_0))
@@ -92,12 +93,13 @@ for n_i in range(len(data_vis_0_05[0])):
 		
 			#print chi2
         	ncal_sol.append([fitp[0:g_0.size]/np.mean(fitp[0:g_0.size]),fitp[g_0.size:],chi2])
-	N_sample_sol.append(ncal_sol)		
+	N_sol.append(ncal_sol)		
 
-np.save('lincal_results_100_sim_redu' + repr(xdim) + repr(ydim) + '.npy',N_sample_sol)
+#np.save('lincal_results_20_data_redundant' + repr(xdim) + repr(ydim) + '.npy',N_sol)
 
-"""
-sky = data_vis_0_05[0][0]
+
+
+sky = data_vis[0][0]
 best_fit_sky = ncal_sol[0][1]
 best_fit_gains = ncal_sol[0][0]
 
@@ -108,10 +110,8 @@ gains = gains/np.average(gains)
 #best_fit_gains = best_fit_gains/np.average(best_fit_gains)
 
 plt.figure()
-
-
-#plt.quiver(np.real(sky), np.imag(sky), np.real(best_fit_sky-sky), np.imag(best_fit_sky-sky),angles='xy', scale_units='xy', scale=1)
-plt.title('50% offset at 170MHz ')
+plt.quiver(np.real(sky), np.imag(sky), np.real(best_fit_sky-sky), np.imag(best_fit_sky-sky),angles='xy', scale_units='xy', scale=1)
+plt.title('1000% offset at 170MHz ')
 plt.plot(np.real(sky), np.imag(sky),'r.',label='True Visibilities')
 plt.plot(np.real(best_fit_sky), np.imag(best_fit_sky),'*',label='Visibility Solution' )
 plt.legend(loc='best')
@@ -120,42 +120,49 @@ plt.ylabel('Imaginary Part')
 plt.grid(True)
 
 
-"""
+plt.figure()
+plt.title('1000% offset at 170MHz ')
+plt.plot(np.real(gains),np.real(best_fit_gains),'r.')
+#plt.plot(np.real(best_fit_sky), np.imag(best_fit_sky),'*',label='Visibility Solution' )
+plt.legend(loc='best')
+plt.xlabel('input Amplitude')
+plt.ylabel('Output Amplitude')
+plt.grid(True)
 
+plt.figure()
+plt.title('1000% offset at 170MHz ')
+plt.plot(np.angle(gains),np.angle(best_fit_gains),'r.')
+#plt.plot(np.real(best_fit_sky), np.imag(best_fit_sky),'*',label='Visibility Solution' )
+plt.legend(loc='best')
+plt.xlabel('input Phase (radians)')
+plt.ylabel('Output Phase (radians)')
+plt.grid(True)
+
+"""
 print 'finish calculating lincal'
 Gains_Sol = []
 SKY_sol =[]
-for q_i in range(len(N_sample_sol)):
+#for q_i in range(len(N_sample_sol)):
 
-	Gain_Sol ={}
-	Sky_sol ={}
-	ant = np.arange(xdim*ydim)
-	n_unique = np.arange(len(data_vis[0][0]))
-	for ii in range(len(ant)):
+Gain_Sol ={}
+Sky_sol ={}
+ant = np.arange(xdim*ydim)
+n_unique = np.arange(len(data_vis[0][0]))
+for ii in range(len(ant)):
 		tmp=[]
 		for nu_i in range(len(nu)):
-			for i in range(len(N_sample_sol[q_i][nu_i][0])):
+			for i in range(len(ncal_sol[nu_i][0])):
 				if ii == i:
-					tmp.append(N_sample_sol[q_i][nu_i][0][i])
-	Gain_Sol[ii]= tmp
+					tmp.append(ncal_sol[nu_i][0][i])
+		Gain_Sol[ii]= tmp
 
 
 
-	for kk in range(len(n_unique)):
-		tmp=[]
-		for nu_i in range(len(nu)):
-			for j in range(len(N_sample_sol[q_i][nu_i][1])):
-				if kk == j:
-					tmp.append(N_sample_sol[q_i][nu_i][1][j])
-		Sky_sol[kk]= tmp
-
-	Gains_Sol.append(Gain_Sol)
-	SKY_sol.append(Sky_sol)
 
 
-np.save('GAIN_SOL_100_redu.npy',[gains,Gains_Sol])
-np.save('SKY_SOL_100_redu.npy',SKY_sol)
-			
+np.save('GAIN_SOL_20_redu.npy',[gains,Gain_Sol])
+#np.save('SKY_SOL_20_redu.npy',SKY_sol)
+"""			
 """
 plt.figure()
 plt.title('ANt0 50% offset')
